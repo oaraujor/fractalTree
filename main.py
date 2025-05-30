@@ -9,27 +9,19 @@ import ctypes
 
 from custLinAlg import *
 
-def draw_linesR(screen, color, start, end, n, N):
-    factor = 0.75
-    angle = math.degrees(45) #conversion from deg to rad
-    #base case for recursion
-    if n == 1:
-        pygame.draw.line(screen, color, start, end, 3)
-        n += 1
-
-    #Recursion 
-    elif n > 1 and n < N:
-        scaledEnd = vectorScaling(end, factor)
-        rotatedEnd = vectorRotation(scaledEnd, angle)
-
-        pygame.draw.line(screen, color, end, rotatedEnd, 3)
-        draw_linesR(screen, color, end, rotatedEnd, n, N)
-        #pygame.draw.line(screen, color, start, end, 3)
-        n += 1
-
-    #end case
-    elif (n > N):
+def draw_linesR(screen, color, start, direction, n, N):
+    if n > N:
         return
+    
+    # Compute new direction
+    scaled = vectorScaling(direction, 0.65)
+    
+    for angle in [math.radians(60), -math.radians(40)]:
+        rotated = vectorRotation(scaled, angle)
+        new_end = [start[0] + rotated[0], start[1] + rotated[1]]
+        pygame.draw.line(screen, color, start, new_end, 1)
+        draw_linesR(screen, color, new_end, rotated, n + 1, N)
+
 
 def main():
 
@@ -48,17 +40,15 @@ def main():
     clock = pygame.time.Clock()
     run = True
 
-    x = screen_width / 2
-    y = screen_height / 2
-
-    #pygame.draw.line(screen, (57,255,20), (x,screen_height), (x, y), 3)
+    x = screen_width / 2    #start in the middle
+    y = (screen_height) * 0.65
 
     #set up first branch
     color = (57,255,20)
     start = [x, screen_height]
     end = [x, y]
     n = 1
-    max_generations = 7
+    max_generations = 8
 
     while run:
         for event in pygame.event.get():
@@ -73,7 +63,10 @@ def main():
         text_surface = font.render("Fractal Canopy", True, (255,255,255))
         screen.blit(text_surface, (10,10))
 
-        draw_linesR(screen, color, start, end, n, max_generations)
+        pygame.draw.line(screen, (57,255,20), start, end, 1)
+        initial_direction = [0, -(screen_height / 4)] # Vector pointing upward
+        draw_linesR(screen, color, end, initial_direction, n, max_generations)
+        
         #end render section
         pygame.display.flip()
         clock.tick(60)
