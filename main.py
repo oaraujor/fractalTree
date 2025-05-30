@@ -1,51 +1,56 @@
+#   Fractal Canopy Visualization
+#   Author: Octavio Araujo Rosales
+#   Date: 05/28/2025
+#   Last edited: 05/29/2025
+
 import pygame
 import os
 import ctypes
 
+from custLinAlg import *
+
 def draw_linesR(screen, color, start, end, n, N):
+    #base case for recursion
     if n == 1:
         pygame.draw.line(screen, color, start, end, 3)
         n += 1
 
+    #Recursion 
     elif n > 1 and n < N:
         n += 1
 
+    #end case
     elif (n > N):
         return
-        
-        
-        
-
 
 def main():
+
+    #get users screen size
     user32 = ctypes.windll.user32
     user32.SetProcessDPIAware()
     screen_width = user32.GetSystemMetrics(0)
     screen_height = user32.GetSystemMetrics(1)
 
     #initialize pygame
-    screen = pygame.display.set_mode((screen_width,screen_height), pygame.RESIZABLE)
-    os.environ['SDL_VIDEO_CENTERED'] = '1'
     pygame.init()
+    screen = pygame.display.set_mode((screen_width,screen_height), pygame.RESIZABLE)
+    pygame.display.set_caption("Fractal Canopy")
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
+    font = pygame.font.SysFont('consolas', 24)
     clock = pygame.time.Clock()
     run = True
-
-    print("w: " + str(screen_width) + "\n")
-    print("h: " + str(screen_height) + "\n")
 
     x = screen_width / 2
     y = screen_height / 2
 
-    print("x: " + str(x) + "\n")
-    print("y: " + str(y) + "\n")
-
-
     #pygame.draw.line(screen, (57,255,20), (x,screen_height), (x, y), 3)
+
+    #set up first branch
     color = (57,255,20)
-    start = ((x,screen_height))
-    end = (x, y)
+    start = [x, screen_height]
+    end = [x, y]
     n = 1
-    N = 5
+    max_generations = 5
 
     while run:
         for event in pygame.event.get():
@@ -55,9 +60,13 @@ def main():
                     run = False
 
         screen.fill("black")
+        #render section
 
-        draw_linesR(screen, color, start, end, n, N)
+        text_surface = font.render("Fractal Canopy", True, (255,255,255))
+        screen.blit(text_surface, (10,10))
 
+        draw_linesR(screen, color, start, end, n, max_generations)
+        #end render section
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
