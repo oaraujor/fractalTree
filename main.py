@@ -9,14 +9,18 @@ import ctypes
 
 from custLinAlg import *
 
+ratio = .61
+angle1 = 75
+angle2 = 50
+
 def draw_linesR(screen, color, start, direction, n, N):
     if n > N:
         return
     
     # Compute new direction
-    scaled = vectorScaling(direction, 0.65)
+    scaled = vectorScaling(direction, ratio)
     
-    for angle in [math.radians(60), -math.radians(40)]:
+    for angle in [math.radians(angle1), -math.radians(angle2)]:
         rotated = vectorRotation(scaled, angle)
         new_end = [start[0] + rotated[0], start[1] + rotated[1]]
         pygame.draw.line(screen, color, start, new_end, 1)
@@ -41,7 +45,7 @@ def main():
     run = True
 
     x = screen_width / 2    #start in the middle
-    y = (screen_height) * 0.65
+    y = (screen_height) * ratio
 
     #set up first branch
     color = (57,255,20)
