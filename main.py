@@ -10,6 +10,8 @@ import ctypes
 from custLinAlg import *
 
 def draw_linesR(screen, color, start, end, n, N):
+    factor = 0.75
+    angle = math.degrees(45) #conversion from deg to rad
     #base case for recursion
     if n == 1:
         pygame.draw.line(screen, color, start, end, 3)
@@ -17,6 +19,12 @@ def draw_linesR(screen, color, start, end, n, N):
 
     #Recursion 
     elif n > 1 and n < N:
+        scaledEnd = vectorScaling(end, factor)
+        rotatedEnd = vectorRotation(scaledEnd, angle)
+
+        pygame.draw.line(screen, color, end, rotatedEnd, 3)
+        draw_linesR(screen, color, end, rotatedEnd, n, N)
+        #pygame.draw.line(screen, color, start, end, 3)
         n += 1
 
     #end case
@@ -50,7 +58,7 @@ def main():
     start = [x, screen_height]
     end = [x, y]
     n = 1
-    max_generations = 5
+    max_generations = 7
 
     while run:
         for event in pygame.event.get():
