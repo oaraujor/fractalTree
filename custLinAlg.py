@@ -14,3 +14,12 @@ def vectorScaling(vector, factor):
     for element in vector:
         scaledVector.append(element * factor)
     return scaledVector
+
+def changeColor(color):
+    newColor_list = []
+    for i in color:
+        i += 10
+        newColor_list.append(i)
+    newColor = tuple(newColor_list)
+
+    return tuple(newColor)
