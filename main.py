@@ -7,9 +7,9 @@ import ctypes
 
 from custLinAlg import *
 
-ratio = .66
+ratio = .60
 angle1 = 45
-angle2 = 90
+angle2 = 45
 max_generations = 9
 
 
@@ -23,8 +23,7 @@ def draw_linesR(screen, color, start, direction, n, N):
     for angle in [math.radians(angle1), -math.radians(angle2)]:
         rotated = vectorRotation(scaled, angle)
         new_end = [start[0] + rotated[0], start[1] + rotated[1]]
-        #newColor = changeColor(color)
-        pygame.draw.line(screen, color, start, new_end, 1)
+        pygame.draw.line(screen, color, start, new_end, 4)
         draw_linesR(screen, color, new_end, rotated, n + 1, N)
 
 
@@ -66,7 +65,7 @@ def main():
     secAngle_rect = pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height)
 
     x = screen_width / 2    #start in the middle
-    y = (screen_height) /2
+    y = (screen_height) * ratio
 
     #set up first branch
     color = (57,255,20) #neon green color
@@ -108,23 +107,23 @@ def main():
         #render section
 
         if is_activeFrstAngle:
-            color_FrstAngle = pygame.Color(255,255,255)
-        else:
             color_FrstAngle = pygame.Color(57,255,20)
+        else:
+            color_FrstAngle = pygame.Color(255,255,255)
 
         if is_activeSecAngle:
-            color_SecAngle = pygame.Color(255,255,255)
-        else:
             color_SecAngle = pygame.Color(57,255,20)
+        else:
+            color_SecAngle = pygame.Color(255,255,255)
 
         pygame.draw.rect(screen, color_FrstAngle, frstAngle_rect, 4) #draw first anglebox
         pygame.draw.rect(screen, color_SecAngle, secAngle_rect, 4) #draw second anglebox
 
         rendered_title = title_fnt.render("Fractal Canopy", True, (255,255,255))
-        rendered_frstAngle = frstAngle_fnt.render(usr_frstAngle_txt, True, (255,255,255))
-        rendered_secAngle = secAngle_fnt.render(usr_secAngle_txt, True, (255,255,255))
+        rendered_frstAngle = frstAngle_fnt.render(usr_frstAngle_txt, True, color_FrstAngle)
+        rendered_secAngle = secAngle_fnt.render(usr_secAngle_txt, True, color_SecAngle)
 
-        screen.blit(rendered_title, (x_padding, 10))
+        screen.blit(rendered_title, (x_padding, title_y))
         screen.blit(rendered_frstAngle, (frstAngle_rect.x + 5, frstAngle_rect.y + 5))
         screen.blit(rendered_secAngle, (secAngle_rect.x + 5, secAngle_rect.y + 5))
 
@@ -132,8 +131,8 @@ def main():
         secAngle_rect.w = max(50, rendered_secAngle.get_width() + 10)
 
 
-        pygame.draw.line(screen, (57,255,20), start, end, 1)
-        initial_direction = [0, -(screen_height / 4)] # Vector pointing upward
+        pygame.draw.line(screen, (57,255,20), start, end, 4)
+        initial_direction = [end[0] - start[0], end[1] - start[1]]
         draw_linesR(screen, color, end, initial_direction, n, max_generations)
         
         #end render section
