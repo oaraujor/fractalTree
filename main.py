@@ -1,7 +1,5 @@
-#   Fractal Canopy Visualization
+#   Interactive Fractal Canopy Visualization
 #   Author: Octavio Araujo Rosales
-#   Date: 05/28/2025
-#   Last edited: 05/29/2025
 
 import pygame
 import os
@@ -38,26 +36,34 @@ def main():
     screen_width = user32.GetSystemMetrics(0)
     screen_height = user32.GetSystemMetrics(1)
 
-    x_padding = 10
-
     #initialize pygame
     pygame.init()
     screen = pygame.display.set_mode((screen_width,screen_height), pygame.RESIZABLE)
     pygame.display.set_caption("Fractal Canopy")
     clock = pygame.time.Clock()
-    title_fnt = pygame.font.SysFont('consolas', 56)
+    title_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.04))
     os.environ['SDL_VIDEO_CENTERED'] = '1'
 
     usr_frstAngle_txt = '30'
-    frstAngle_fnt = pygame.font.SysFont('consolas', 40)
-    frstAngle_rect = pygame.Rect(x_padding, 20, 60, 40)
+    frstAngle_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.035))
     is_activeFrstAngle = False
 
     usr_secAngle_txt = '60'
-    secAngle_fnt = pygame.font.SysFont('consolas', 40)
-    secAngle_rect = pygame.Rect(x_padding, 80, 60, 40)
+    secAngle_fnt = pygame.font.SysFont('consolas',  int(screen_height * 0.035))
     is_activeSecAngle = False
 
+    title_height = title_fnt.get_height()
+    txtBox_height = frstAngle_fnt.get_height() + 10
+    spacing = int(screen_height * 0.01)
+    title_y = spacing
+    frstAngle_y = title_y + title_height + spacing
+    secAngle_y = frstAngle_y + txtBox_height + spacing
+    x_padding = int(screen_width * 0.01)
+    txtBox_width = int(screen_width * 0.05)
+
+
+    frstAngle_rect = pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height)
+    secAngle_rect = pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height)
 
     x = screen_width / 2    #start in the middle
     y = (screen_height) /2
@@ -121,7 +127,7 @@ def main():
         screen.blit(rendered_title, (x_padding, 10))
         screen.blit(rendered_frstAngle, (frstAngle_rect.x + 5, frstAngle_rect.y + 5))
         screen.blit(rendered_secAngle, (secAngle_rect.x + 5, secAngle_rect.y + 5))
-        
+
         frstAngle_rect.w = max(50, rendered_frstAngle.get_width() + 10)
         secAngle_rect.w = max(50, rendered_secAngle.get_width() + 10)
 
