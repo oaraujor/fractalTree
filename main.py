@@ -51,18 +51,22 @@ def main():
     secAngle_fnt = pygame.font.SysFont('consolas',  int(screen_height * 0.035))
     is_activeSecAngle = False
 
+    updtButton_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.020))
+
     title_height = title_fnt.get_height()
     txtBox_height = frstAngle_fnt.get_height() + 10
     spacing = int(screen_height * 0.01)
     title_y = spacing
     frstAngle_y = title_y + title_height + spacing
     secAngle_y = frstAngle_y + txtBox_height + spacing
+    button_y = secAngle_y + txtBox_height + spacing
     x_padding = int(screen_width * 0.01)
     txtBox_width = int(screen_width * 0.05)
 
 
     frstAngle_rect = pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height)
     secAngle_rect = pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height)
+    updateButton_rect = pygame.Rect(x_padding, button_y,txtBox_width, txtBox_height)
 
     x = screen_width / 2    #start in the middle
     y = (screen_height) * ratio
@@ -118,17 +122,21 @@ def main():
 
         pygame.draw.rect(screen, color_FrstAngle, frstAngle_rect, 4) #draw first anglebox
         pygame.draw.rect(screen, color_SecAngle, secAngle_rect, 4) #draw second anglebox
+        pygame.draw.rect(screen, (255,255,255), updateButton_rect, 0) #draw update button
 
         rendered_title = title_fnt.render("Fractal Canopy", True, (255,255,255))
         rendered_frstAngle = frstAngle_fnt.render(usr_frstAngle_txt, True, color_FrstAngle)
         rendered_secAngle = secAngle_fnt.render(usr_secAngle_txt, True, color_SecAngle)
+        rendered_updtBttn = updtButton_fnt.render("Update Fractal", True, (0,0,0))
 
         screen.blit(rendered_title, (x_padding, title_y))
         screen.blit(rendered_frstAngle, (frstAngle_rect.x + 5, frstAngle_rect.y + 5))
         screen.blit(rendered_secAngle, (secAngle_rect.x + 5, secAngle_rect.y + 5))
+        screen.blit(rendered_updtBttn, (updateButton_rect.x + 5, updateButton_rect.y + 5))
 
         frstAngle_rect.w = max(50, rendered_frstAngle.get_width() + 10)
         secAngle_rect.w = max(50, rendered_secAngle.get_width() + 10)
+        updateButton_rect.w = max(10, rendered_updtBttn.get_width() + 10)
 
 
         pygame.draw.line(screen, (57,255,20), start, end, 4)
