@@ -7,13 +7,7 @@ import ctypes
 
 from custLinAlg import *
 
-ratio = .60
-angle1 = 45
-angle2 = 45
-max_generations = 9
-
-
-def draw_linesR(screen, color, start, direction, n, N):
+def draw_linesR(screen, color, start, direction, n, N, angle1, angle2, ratio):
     if n > N:
         return
     
@@ -43,11 +37,11 @@ def main():
     title_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.04))
     os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-    usr_frstAngle_txt = '30'
+    usr_frstAngle_txt = ''
     frstAngle_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.035))
     is_activeFrstAngle = False
 
-    usr_secAngle_txt = '60'
+    usr_secAngle_txt = ''
     secAngle_fnt = pygame.font.SysFont('consolas',  int(screen_height * 0.035))
     is_activeSecAngle = False
 
@@ -63,7 +57,6 @@ def main():
     x_padding = int(screen_width * 0.01)
     txtBox_width = int(screen_width * 0.05)
 
-
     frstAngle_rect = pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height)
     secAngle_rect = pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height)
     updateButton_rect = pygame.Rect(x_padding, button_y,txtBox_width, txtBox_height)
@@ -78,6 +71,9 @@ def main():
     n = 1
 
     run = True
+
+    ratio = .60
+    max_generations = 9
 
     while run:
         for event in pygame.event.get():
@@ -141,7 +137,18 @@ def main():
 
         pygame.draw.line(screen, (57,255,20), start, end, 4)
         initial_direction = [end[0] - start[0], end[1] - start[1]]
-        draw_linesR(screen, color, end, initial_direction, n, max_generations)
+        try:
+            flt_fsrtAngle = float(usr_frstAngle_txt)
+            flt_secAngle = float(usr_secAngle_txt)
+            button
+        except ValueError:
+            flt_fsrtAngle = 30
+            flt_secAngle = 30
+
+
+
+
+        draw_linesR(screen, color, end, initial_direction, n, max_generations, usr_frstAngle_txt, usr_secAngle_txt, ratio)
         
         #end render section
         pygame.display.flip()
