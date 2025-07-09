@@ -1,4 +1,6 @@
 import pygame
+import math
+from custLinAlg import *
 
 class TextBox:
     def __init__(self, rect, font, default_text=''):
@@ -44,22 +46,54 @@ class FractalTree:
         self.start = start
         self.end = end
         self.max_gen = max_gen
-        self.angle1 = angle1
-        self.angle2 = angle2
+        self.frst_angle = angle1
+        self.sec_angle2 = angle2
         self.ratio = ratio
+        
+        self.base_color = (57, 255, 20)
         self.animating = False
         self.current_gen = 0
-
-    def draw(self, screen):
-        pass
-
-    def animate_stop(self):
-        pass
+        self.branch_thickness = 1
 
     def reset(self):
-        self.current_gen = 0
+        self.current_gen = 1
         self.animating = True
+
+    def update_params(self, angle1, angle2, ratio, max_gen):
+        self.frst_angle = angle1
+        self.sec_angle = angle2
+        self.ratio = ratio
+        self.max_gen = max_gen
+        self.reset()
+
+    def draw(self, screen):
+        pygame.draw.line(screen, self.base_color, self.start, self.end, self.branch_thickness)
+        direction = [self.end[0] - self.start[0], self.end[1] - self.start[1]]
+        self._draw_recursive(screen, self.end, direction, 1, self.current_gen)
+
+    def animate_step(self):
+        if self.animating:
+            self.current_gen += 1
+            if self.current_gen > self.max_gen:
+                self.animating = False
 
     def is_animating(self):
         return self.animating
+
+    def _draw_recursive(self, screen, start, direction, n, N):
+        angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle2)]
+
+        if n > N:
+            return
+    
+        scaled = vectorScaling(direction, self.ratio)
+        for angle in angles:
+            rotated = vectorRotation(scaled, angle)
+            new_end = [start[0] + rotated[0], start[1] + rotated[1]]
+            pygame.draw.line(screen, self.base_color, start, new_end, self.branch_thickness)
+            self._draw_linesR(screen, new_end, rotated, n + 1, N)
+
+
+
+
         
