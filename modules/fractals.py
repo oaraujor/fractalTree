@@ -1,6 +1,7 @@
 import pygame
 import math
-from custLinAlg import *
+
+from modules.custLinAlg import *
 
 class TextBox:
     def __init__(self, rect, font, default_text=''):
@@ -17,6 +18,7 @@ class TextBox:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.active = True
+                self.text = ''
             else:
                 self.active = False
             self.color = self.color_active if self.active else self.color_inactive
@@ -38,6 +40,7 @@ class TextBox:
         try:
             return float(self.text)
         except ValueError:
+            self.text = '30'
             return default
 
 class FractalTree:
@@ -48,6 +51,8 @@ class FractalTree:
         self.max_gen = max_gen
         self.frst_angle = angle1
         self.sec_angle2 = angle2
+        self.angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle2)]
+
         self.ratio = ratio
         
         self.base_color = (57, 255, 20)
@@ -62,6 +67,8 @@ class FractalTree:
     def update_params(self, angle1, angle2, ratio, max_gen):
         self.frst_angle = angle1
         self.sec_angle = angle2
+        self.angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle2)]
+
         self.ratio = ratio
         self.max_gen = max_gen
         self.reset()
@@ -81,17 +88,16 @@ class FractalTree:
         return self.animating
 
     def _draw_recursive(self, screen, start, direction, n, N):
-        angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle2)]
 
         if n > N:
             return
     
         scaled = vectorScaling(direction, self.ratio)
-        for angle in angles:
+        for angle in self.angles:
             rotated = vectorRotation(scaled, angle)
             new_end = [start[0] + rotated[0], start[1] + rotated[1]]
             pygame.draw.line(screen, self.base_color, start, new_end, self.branch_thickness)
-            self._draw_linesR(screen, new_end, rotated, n + 1, N)
+            self._draw_recursive(screen, new_end, rotated, n + 1, N)
 
 
 

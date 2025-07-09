@@ -5,8 +5,7 @@ import pygame
 import os
 import ctypes
 
-from custLinAlg import *
-from fractals import *
+from modules.fractals import TextBox, FractalTree
 
 def main():
 
@@ -25,6 +24,8 @@ def main():
 
     title_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.04))
     font_tb = pygame.font.SysFont('consolas', int(screen_height * 0.035))
+    button_font = pygame.font.SysFont('consolas', int(screen_height * 0.025))
+
 
     title_height = title_fnt.get_height()
     txtBox_height = font_tb.get_height() + 10
@@ -33,26 +34,42 @@ def main():
     title_y = spacing
     frstAngle_y = title_y + title_height + spacing
     secAngle_y = frstAngle_y + txtBox_height + spacing
-    #button_y = secAngle_y + txtBox_height + spacing
+    button_y = secAngle_y + txtBox_height + spacing
+
     x_padding = int(screen_width * 0.01)
     txtBox_width = int(screen_width * 0.05)
 
+    frstAngle_textbox = TextBox(
+        pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height),
+        font_tb,
+        '30'
+        )
+    secAngle_textbox = TextBox(
+        pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height),
+        font_tb,
+        '30'
+        )
 
-    frstAngle_rect = pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height)
-    secAngle_rect = pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height)
-    frstAngle_textbox = TextBox(frstAngle_rect, font_tb, default_text = '30')
-    secAngle_textbox = TextBox(secAngle_rect, font_tb, default_text = '30')
+    draw_button_rect = pygame.Rect(x_padding, button_y, txtBox_width * 2, txtBox_height)
+
 
     ratio = .60
     max_generations = 9
-    color = (57,255,20) #neon green color
 
     #set up first branch
-    x = screen_width / 2    #start in the middle
-    y = (screen_height) * ratio
+    x = screen_width / 2 #start in the middle
     start = [x, screen_height]
-    end = [x, y]
-    n = 1
+    end = [x, (screen_height) * ratio]
+
+    fractal = FractalTree(
+        (screen_width, screen_height),
+        start,
+        end,
+        max_generations,
+        30,
+        30,
+        ratio
+    )
 
     run = True
     while run:
@@ -62,25 +79,32 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
             
-            frstAngle_textbox.handle_event(event)
-            secAngle_textbox.handle_event(event)
+            if not fractal.is_animating():
+                frstAngle_textbox.handle_event(event)
+                secAngle_textbox.handle_event(event)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if draw_button_rect.collidepoint(event.pos):
+                        angle1 = frstAngle_textbox.get_value()
+                        angle2 = secAngle_textbox.get_value()
+                        fractal.update_params(angle1, angle2, ratio, max_generations)
 
         screen.fill("black")
         #render section
 
-        rendered_title = title_fnt.render("Fractal Canopy", True, (255,255,255))
+        rendered_title = title_fnt.render("Fractal Canopy", True, (255, 255, 255))
         screen.blit(rendered_title, (x_padding, title_y))
 
-        frstAngle_textbox.draw(screen)
-        secAngle_textbox.draw(screen)
+        if not fractal.is_animating():
+            frstAngle_textbox.draw(screen)
+            secAngle_textbox.draw(screen)
 
-        pygame.draw.line(screen, (57,255,20), start, end, 4)
-        initial_direction = [end[0] - start[0], end[1] - start[1]]
+        pygame.draw.rect(screen, (255, 255, 255), draw_button_rect)
+        draw_text = button_font.render("Draw Fractal", True, (0, 0, 0))
+        screen.blit(draw_text, (draw_button_rect.x + 5, draw_button_rect.y + 5))
 
-        frst_angle = frstAngle_textbox.get_value()
-        sec_angle = secAngle_textbox.get_value()
-
-        draw_linesR(screen, color, end, initial_direction, n, max_generations, frst_angle, sec_angle, ratio)
+        fractal.draw(screen)
+        fractal.animate_step()
 
         #end render section
         pygame.display.flip()
