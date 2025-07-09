@@ -17,7 +17,7 @@ class TextBox:
                 self.active = True
             else:
                 self.active = False
-            self.color = self.color_inactive if self.active else self.color_inactive
+            self.color = self.color_active if self.active else self.color_inactive
 
         elif event.type == pygame.KEYDOWN and self.active:
             if event.key == pygame.K_BACKSPACE:
@@ -31,7 +31,8 @@ class TextBox:
         screen.blit(rendered_text, (self.rect.x + 5, self.rect.y + 5))
         self.rect.w = max(50, rendered_text.get_width() + 10)
 
-    def get_value(self, default = 30):
+    def get_value(self):
+        default = 30
         try:
             return float(self.text)
         except ValueError:
