@@ -5,7 +5,7 @@ import pygame
 import os
 import ctypes
 
-from modules.fractals import TextBox, FractalTree
+from modules.fractals import TextBox, FractalTree, Button
 
 def main():
 
