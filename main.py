@@ -26,6 +26,7 @@ def main():
     font_tb = pygame.font.SysFont('consolas', int(screen_height * 0.035))
     button_font = pygame.font.SysFont('consolas', int(screen_height * 0.025))
 
+    # auto adjust txtbxs h, w and padding based on users screen size 
 
     title_height = title_fnt.get_height()
     txtBox_height = font_tb.get_height() + 10
@@ -35,9 +36,12 @@ def main():
     frstAngle_y = title_y + title_height + spacing
     secAngle_y = frstAngle_y + txtBox_height + spacing
     button_y = secAngle_y + txtBox_height + spacing
+    export_y = button_y + txtBox_height + spacing
 
     x_padding = int(screen_width * 0.01)
     txtBox_width = int(screen_width * 0.05)
+
+    # init txtboxes
 
     frstAngle_textbox = TextBox(
         pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height),
@@ -51,21 +55,24 @@ def main():
         )
 
     draw_button_rect = pygame.Rect(x_padding, button_y, txtBox_width * 2, txtBox_height)
+    save_fractal_image = pygame.Rect(x_padding, export_y, txtBox_width * 2, txtBox_height)
 
+    # set ratio
+    ratio = 0.65
 
-    ratio = .60
-    max_generations = 9
+    #start in the middle
+    x = screen_width / 2
 
-    #set up first branch
-    x = screen_width / 2 #start in the middle
+    #set up for first branch
     start = [x, screen_height]
     end = [x, (screen_height) * ratio]
 
+    # init fractal tree
     fractal = FractalTree(
         (screen_width, screen_height),
         start,
         end,
-        max_generations,
+        9, #number of generations
         30,
         30,
         ratio
@@ -87,7 +94,9 @@ def main():
                     if draw_button_rect.collidepoint(event.pos):
                         angle1 = frstAngle_textbox.get_value()
                         angle2 = secAngle_textbox.get_value()
-                        fractal.update_params(angle1, angle2, ratio, max_generations)
+                        fractal.update_angles(angle1, angle2)
+                    if save_fractal_image.collidepoint(event.pos) and not fractal.is_animating():
+                        pygame.image.save(screen, "fractal_export.png")
 
         screen.fill("black")
         #render section
@@ -102,6 +111,11 @@ def main():
         pygame.draw.rect(screen, (255, 255, 255), draw_button_rect)
         draw_text = button_font.render("Draw Fractal", True, (0, 0, 0))
         screen.blit(draw_text, (draw_button_rect.x + 5, draw_button_rect.y + 5))
+
+        pygame.draw.rect(screen, (255, 255, 255), save_fractal_image)
+        export_text = button_font.render("Save Fractal As Image", True, (0, 0, 0))
+        screen.blit(export_text, (save_fractal_image.x + 5, save_fractal_image.y + 5))
+
 
         fractal.draw(screen)
         fractal.animate_step()

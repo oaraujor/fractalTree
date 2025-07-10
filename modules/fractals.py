@@ -4,10 +4,10 @@ import math
 from modules.custLinAlg import *
 
 class TextBox:
-    def __init__(self, rect, font, default_text=''):
+    def __init__(self, rect, font, text):
         self.rect = rect
         self.font = font
-        self.text = default_text
+        self.text = text
         self.active = False
         self.color_active = pygame.Color(57, 255, 20)
         self.color_inactive = pygame.Color(255, 255, 255)
@@ -44,14 +44,14 @@ class TextBox:
             return default
 
 class FractalTree:
-    def __init__(self, screen_size, start, end, max_gen = 8, angle1 = 30, angle2 = 30, ratio = 0.6):
+    def __init__(self, screen_size, start, end, max_gen , angle1, angle2, ratio):
         self.screen_size = screen_size
         self.start = start
         self.end = end
         self.max_gen = max_gen
         self.frst_angle = angle1
-        self.sec_angle2 = angle2
-        self.angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle2)]
+        self.sec_angle = angle2
+        self.angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle)]
 
         self.ratio = ratio
         
@@ -64,13 +64,11 @@ class FractalTree:
         self.current_gen = 1
         self.animating = True
 
-    def update_params(self, angle1, angle2, ratio, max_gen):
+    def update_angles(self, angle1, angle2):
         self.frst_angle = angle1
         self.sec_angle = angle2
-        self.angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle2)]
+        self.angles = [math.radians(self.frst_angle), -math.radians(self.sec_angle)]
 
-        self.ratio = ratio
-        self.max_gen = max_gen
         self.reset()
 
     def draw(self, screen):
@@ -98,8 +96,4 @@ class FractalTree:
             new_end = [start[0] + rotated[0], start[1] + rotated[1]]
             pygame.draw.line(screen, self.base_color, start, new_end, self.branch_thickness)
             self._draw_recursive(screen, new_end, rotated, n + 1, N)
-
-
-
-
         
