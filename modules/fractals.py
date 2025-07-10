@@ -96,4 +96,34 @@ class FractalTree:
             new_end = [start[0] + rotated[0], start[1] + rotated[1]]
             pygame.draw.line(screen, self.base_color, start, new_end, self.branch_thickness)
             self._draw_recursive(screen, new_end, rotated, n + 1, N)
-        
+
+class Button:
+    def __init__(self, rect, font, text, on_click = None):
+        self.rect = rect
+        self.font = font
+        self.text = text
+        self.on_click = on_click
+        self.hovered = False
+        self.clicked = False
+    
+    def draw(self, screen):
+        bg_color = (180, 180, 180) if self.clicked else (255, 255, 255)
+        text_color = (0, 0, 0)
+
+        pygame.draw.rect(screen, bg_color, self.rect, border_radius=6)
+
+        rendered_text = self.font.render(self.text, True, text_color)
+        text_rect = rendered_text.get_rect(center=self.rect.center)
+        screen.blit(rendered_text, text_rect)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEMOTION:
+            self.hovered = self.rect.collidepoint(event.pos)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.clicked = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if self.clicked and self.rect.collidepoint(event.pos):
+                if self.on_click:
+                    self.on_click()
+            self.clicked = False
