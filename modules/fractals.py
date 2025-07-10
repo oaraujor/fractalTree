@@ -108,11 +108,14 @@ class Button:
     
     def draw(self, screen):
         bg_color = (180, 180, 180) if self.clicked else (255, 255, 255)
-        text_color = (0, 0, 0)
+        text_color = (255, 255, 255)
 
-        pygame.draw.rect(screen, bg_color, self.rect, border_radius=6)
 
         rendered_text = self.font.render(self.text, True, text_color)
+        self.rect.w = max(10, rendered_text.get_width() + 10)
+        
+        pygame.draw.rect(screen, bg_color, self.rect, 1)
+
         text_rect = rendered_text.get_rect(center=self.rect.center)
         screen.blit(rendered_text, text_rect)
 

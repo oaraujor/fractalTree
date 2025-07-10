@@ -54,8 +54,22 @@ def main():
         '30'
         )
 
-    draw_button_rect = pygame.Rect(x_padding, button_y, txtBox_width * 2, txtBox_height)
-    save_fractal_image = pygame.Rect(x_padding, export_y, txtBox_width * 2, txtBox_height)
+    #draw_button_rect = pygame.Rect(x_padding, button_y, txtBox_width * 2, txtBox_height)
+    #save_fractal_image = pygame.Rect(x_padding, export_y, txtBox_width * 2, txtBox_height)
+
+    draw_button = Button(
+        pygame.Rect(x_padding, button_y, txtBox_width * 2, txtBox_height),
+        button_font,
+        "Draw Fractal",
+        on_click = lambda: fractal.update_angles(frstAngle_textbox.get_value(), secAngle_textbox.get_value())
+    )
+
+    save_button = Button(
+        pygame.Rect(x_padding, export_y, txtBox_width * 2, txtBox_height),
+        button_font,
+        "Save Fractal As Image",
+        on_click = lambda: pygame.image.save(screen, "fractal_export.png")
+    )
 
     # set ratio
     ratio = 0.65
@@ -89,14 +103,16 @@ def main():
             if not fractal.is_animating():
                 frstAngle_textbox.handle_event(event)
                 secAngle_textbox.handle_event(event)
+                draw_button.handle_event(event)
+                save_button.handle_event(event)
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if draw_button_rect.collidepoint(event.pos):
-                        angle1 = frstAngle_textbox.get_value()
-                        angle2 = secAngle_textbox.get_value()
-                        fractal.update_angles(angle1, angle2)
-                    if save_fractal_image.collidepoint(event.pos) and not fractal.is_animating():
-                        pygame.image.save(screen, "fractal_export.png")
+                #if event.type == pygame.MOUSEBUTTONDOWN:
+                    #if draw_button_rect.collidepoint(event.pos):
+                        #angle1 = frstAngle_textbox.get_value()
+                        #angle2 = secAngle_textbox.get_value()
+                        #fractal.update_angles(angle1, angle2)
+                    #if save_fractal_image.collidepoint(event.pos) and not fractal.is_animating():
+                        #pygame.image.save(screen, "fractal_export.png")
 
         screen.fill("black")
         #render section
@@ -107,14 +123,16 @@ def main():
         if not fractal.is_animating():
             frstAngle_textbox.draw(screen)
             secAngle_textbox.draw(screen)
+            draw_button.draw(screen)
+            save_button.draw(screen)
 
-        pygame.draw.rect(screen, (255, 255, 255), draw_button_rect)
-        draw_text = button_font.render("Draw Fractal", True, (0, 0, 0))
-        screen.blit(draw_text, (draw_button_rect.x + 5, draw_button_rect.y + 5))
+        #pygame.draw.rect(screen, (255, 255, 255), draw_button_rect)
+        #draw_text = button_font.render("Draw Fractal", True, (0, 0, 0))
+        #screen.blit(draw_text, (draw_button_rect.x + 5, draw_button_rect.y + 5))
 
-        pygame.draw.rect(screen, (255, 255, 255), save_fractal_image)
-        export_text = button_font.render("Save Fractal As Image", True, (0, 0, 0))
-        screen.blit(export_text, (save_fractal_image.x + 5, save_fractal_image.y + 5))
+        #pygame.draw.rect(screen, (255, 255, 255), save_fractal_image)
+        #export_text = button_font.render("Save Fractal As Image", True, (0, 0, 0))
+        #screen.blit(export_text, (save_fractal_image.x + 5, save_fractal_image.y + 5))
 
 
         fractal.draw(screen)
