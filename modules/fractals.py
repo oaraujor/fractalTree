@@ -30,7 +30,7 @@ class TextBox:
                 self.text += event.unicode
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect, 4)
+        pygame.draw.rect(screen, self.color, self.rect, 1)
         rendered_text = self.font.render(self.text, True, self.color)
         screen.blit(rendered_text, (self.rect.x + 5, self.rect.y + 5))
         self.rect.w = max(50, rendered_text.get_width() + 10)
@@ -113,7 +113,7 @@ class Button:
 
         rendered_text = self.font.render(self.text, True, text_color)
         self.rect.w = max(10, rendered_text.get_width() + 10)
-        
+
         pygame.draw.rect(screen, bg_color, self.rect, 1)
 
         text_rect = rendered_text.get_rect(center=self.rect.center)
