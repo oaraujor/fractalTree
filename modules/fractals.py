@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from modules.custLinAlg import *
+from modules.custLinAlg import vectorRotation, vectorScaling
 
 class TextBox:
     def __init__(self, rect, font, text):
@@ -103,18 +103,29 @@ class Button:
         self.font = font
         self.text = text
         self.on_click = on_click
+
+        self.base_color = (255, 255, 255)
+        self.hover_color = (128, 128, 128)
+        self.click_color = (57, 255, 20)
+        self.text_color = (0, 0, 0)
+
         self.hovered = False
         self.clicked = False
     
     def draw(self, screen):
-        bg_color = (180, 180, 180) if self.clicked else (255, 255, 255)
-        text_color = (255, 255, 255)
+        #bg_color = (180, 180, 180) if self.clicked else (255, 255, 255)
+        #text_color = (255, 255, 255)
+        if self.clicked:
+            color = self.click_color
+        elif self.hovered:
+            color = self.hover_color
+        else:
+            color = self.base_color
 
+        pygame.draw.rect(screen, color, self.rect)
 
-        rendered_text = self.font.render(self.text, True, text_color)
+        rendered_text = self.font.render(self.text, True, self.text_color)
         self.rect.w = max(10, rendered_text.get_width() + 10)
-
-        pygame.draw.rect(screen, bg_color, self.rect, 1)
 
         text_rect = rendered_text.get_rect(center=self.rect.center)
         screen.blit(rendered_text, text_rect)
@@ -123,7 +134,7 @@ class Button:
         if event.type == pygame.MOUSEMOTION:
             self.hovered = self.rect.collidepoint(event.pos)
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
+            if self.rect.collidepoint(event.pos) and event.button == 1:
                 self.clicked = True
         elif event.type == pygame.MOUSEBUTTONUP:
             if self.clicked and self.rect.collidepoint(event.pos):

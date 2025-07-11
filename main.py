@@ -65,7 +65,7 @@ def main():
         pygame.Rect(x_padding, export_y, txtBox_width * 2, txtBox_height),
         button_font,
         "Save Fractal As Image",
-        on_click = lambda: pygame.image.save(screen, "fractal_export.png")
+        on_click = lambda: pygame.image.save(screen, "pictures/fractal_export.png")
     )
 
     # set ratio

@@ -4,8 +4,10 @@ def vectorRotation(vector, angleDeg):
     cosAngle = math.cos(angleDeg)
     sinAngle = math.sin(angleDeg)
 
-    rotatedVector = [(vector[0] * cosAngle) + ((vector[1]) * (-1) * (sinAngle)),
-                     ((vector[0] * sinAngle) + (vector[1] * cosAngle))]
+    rotatedVector = [
+        (vector[0] * cosAngle) + ((vector[1]) * (-1) * (sinAngle)),
+        ((vector[0] * sinAngle) + (vector[1] * cosAngle))
+        ]
 
     return rotatedVector
 
