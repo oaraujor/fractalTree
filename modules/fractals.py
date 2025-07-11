@@ -2,49 +2,9 @@ import pygame
 import math
 
 from modules.custLinAlg import vectorRotation, vectorScaling
-
-#class TextBox:
-    #def __init__(self, rect, font, text):
-        #self.rect = rect
-        #self.font = font
-        #self.text = text
-        #self.active = False
-        #self.color_active = pygame.Color(57, 255, 20)
-        #self.color_inactive = pygame.Color(255, 255, 255)
-        #self.color = self.color_inactive
-
-
-    #def handle_event(self, event):
-        #if event.type == pygame.MOUSEBUTTONDOWN:
-            #if self.rect.collidepoint(event.pos):
-                #self.active = True
-                #self.text = ''
-            #else:
-                #self.active = False
-            #self.color = self.color_active if self.active else self.color_inactive
-
-        #lif event.type == pygame.KEYDOWN and self.active:
-            #f event.key == pygame.K_BACKSPACE:
-                #self.text = self.text[:-1]
-            #elif event.unicode.isnumeric() or event.unicode in ['.', '-']:
-                #self.text += event.unicode
-
-    #def draw(self, screen):
-        #pygame.draw.rect(screen, self.color, self.rect, 1)
-        #rendered_text = self.font.render(self.text, True, self.color)
-        #screen.blit(rendered_text, (self.rect.x + 5, self.rect.y + 5))
-        #self.rect.w = max(50, rendered_text.get_width() + 10)
-
-    #def get_value(self):
-        #default = 30
-        #try:
-            #return float(self.text)
-        #except ValueError:
-            #self.text = '30'
-            #return default
         
 class Slider:
-    def __init__(self, rect, font, label, min_value = -360, max_value = 360, initial_value = 30):
+    def __init__(self, rect, font, label, min_value = 0, max_value = 180, initial_value = 0):
         self.rect = rect
         self.font = font
         self.label = label

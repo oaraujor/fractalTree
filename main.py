@@ -22,53 +22,48 @@ def main():
     os.environ['SDL_VIDEO_CENTERED'] = '1'
     clock = pygame.time.Clock()
 
-    title_fnt = pygame.font.SysFont('consolas', int(screen_height * 0.04))
-    font_tb = pygame.font.SysFont('consolas', int(screen_height * 0.035))
+    title_font = pygame.font.SysFont('consolas', int(screen_height * 0.04))
+    slider_font = pygame.font.SysFont('consolas', int(screen_height * 0.02))
     button_font = pygame.font.SysFont('consolas', int(screen_height * 0.025))
 
     # auto adjust txtbxs h, w and padding based on users screen size 
     x_padding = int(screen_width * 0.01)
     txtBox_width = int(screen_width * 0.05)
+    y_padding = int(screen_height * 0.01)
 
-    title_height = title_fnt.get_height()
-    txtBox_height = font_tb.get_height() + 10
-    spacing = int(screen_height * 0.01)
+    title_height = title_font.get_height()
+    button_height = button_font.get_height()
+    slider_height = slider_font.get_height() + 10
 
-    title_y = spacing
-    export_y = title_y + title_height + spacing
-    
-    sliderPos_y = screen_height - txtBox_height - spacing
-    sec_sliderPos_x = screen_width - (txtBox_width * 4 + x_padding)
+    right_slider_x = screen_width - (txtBox_width * 4 + x_padding)
+
+    export_y = title_height + (y_padding * 2)
+    slider_y = screen_height - slider_height - y_padding
 
     frstAngle_slider = Slider(
-        pygame.Rect(sec_sliderPos_x, sliderPos_y, txtBox_width * 4, txtBox_height),
-        font_tb,
+        pygame.Rect(right_slider_x, slider_y, txtBox_width * 4, slider_height),
+        slider_font,
         "Right Angle",
     )
     secAngle_slider = Slider(
-        pygame.Rect(x_padding, sliderPos_y, txtBox_width * 4, txtBox_height),
-        font_tb,
+        pygame.Rect(x_padding, slider_y, txtBox_width * 4, slider_height),
+        slider_font,
         "Left Angle",
     )
 
     save_button = Button(
-        pygame.Rect(x_padding, export_y, txtBox_width * 2, txtBox_height),
+        pygame.Rect(x_padding, export_y, txtBox_width * 2, button_height),
         button_font,
         "Save Fractal As Image",
         on_click = lambda: pygame.image.save(screen, "pictures/fractal_export.png")
     )
 
-    # set ratio
+    # Fractal setup
     ratio = 0.65
-
-    #start in the middle
     x = screen_width / 2
-
-    #set up for first branch
     start = [x, screen_height]
     end = [x, (screen_height) * ratio]
 
-    # init fractal tree
     fractal = FractalTree(
         (screen_width, screen_height),
         start,
@@ -95,8 +90,8 @@ def main():
         screen.fill("black")
         #render section
 
-        rendered_title = title_fnt.render("Fractal Canopy", True, (255, 255, 255))
-        screen.blit(rendered_title, (x_padding, title_y))
+        rendered_title = title_font.render("Fractal Canopy", True, (255, 255, 255))
+        screen.blit(rendered_title, (x_padding, y_padding))
 
         new_angle1 = frstAngle_slider.get_value()
         new_angle2 = secAngle_slider.get_value()
@@ -106,7 +101,6 @@ def main():
 
         if not fractal.is_animating():
             save_button.draw(screen)
-
 
         frstAngle_slider.draw(screen)
         secAngle_slider.draw(screen)
