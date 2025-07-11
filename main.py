@@ -5,7 +5,7 @@ import pygame
 import os
 import ctypes
 
-from modules.fractals import TextBox, FractalTree, Button
+from modules.fractals import Slider, FractalTree, Button
 
 def main():
 
@@ -27,38 +27,28 @@ def main():
     button_font = pygame.font.SysFont('consolas', int(screen_height * 0.025))
 
     # auto adjust txtbxs h, w and padding based on users screen size 
+    x_padding = int(screen_width * 0.01)
+    txtBox_width = int(screen_width * 0.05)
 
     title_height = title_fnt.get_height()
     txtBox_height = font_tb.get_height() + 10
     spacing = int(screen_height * 0.01)
 
     title_y = spacing
-    frstAngle_y = title_y + title_height + spacing
-    secAngle_y = frstAngle_y + txtBox_height + spacing
-    button_y = secAngle_y + txtBox_height + spacing
-    export_y = button_y + txtBox_height + spacing
+    export_y = title_y + title_height + spacing
+    
+    sliderPos_y = screen_height - txtBox_height - spacing
+    sec_sliderPos_x = screen_width - (txtBox_width * 4 + x_padding)
 
-    x_padding = int(screen_width * 0.01)
-    txtBox_width = int(screen_width * 0.05)
-
-    # init txtboxes
-
-    frstAngle_textbox = TextBox(
-        pygame.Rect(x_padding, frstAngle_y, txtBox_width, txtBox_height),
+    frstAngle_slider = Slider(
+        pygame.Rect(sec_sliderPos_x, sliderPos_y, txtBox_width * 4, txtBox_height),
         font_tb,
-        '30'
-        )
-    secAngle_textbox = TextBox(
-        pygame.Rect(x_padding, secAngle_y, txtBox_width, txtBox_height),
+        "Right Angle",
+    )
+    secAngle_slider = Slider(
+        pygame.Rect(x_padding, sliderPos_y, txtBox_width * 4, txtBox_height),
         font_tb,
-        '30'
-        )
-
-    draw_button = Button(
-        pygame.Rect(x_padding, button_y, txtBox_width * 2, txtBox_height),
-        button_font,
-        "Draw Fractal",
-        on_click = lambda: fractal.update_angles(frstAngle_textbox.get_value(), secAngle_textbox.get_value())
+        "Left Angle",
     )
 
     save_button = Button(
@@ -84,8 +74,8 @@ def main():
         start,
         end,
         9, #number of generations
-        30,
-        30,
+        frstAngle_slider.get_value(),
+        secAngle_slider.get_value(),
         ratio
     )
 
@@ -98,9 +88,8 @@ def main():
                 run = False
             
             if not fractal.is_animating():
-                frstAngle_textbox.handle_event(event)
-                secAngle_textbox.handle_event(event)
-                draw_button.handle_event(event)
+                frstAngle_slider.handle_event(event)
+                secAngle_slider.handle_event(event)
                 save_button.handle_event(event)
 
         screen.fill("black")
@@ -109,12 +98,18 @@ def main():
         rendered_title = title_fnt.render("Fractal Canopy", True, (255, 255, 255))
         screen.blit(rendered_title, (x_padding, title_y))
 
+        new_angle1 = frstAngle_slider.get_value()
+        new_angle2 = secAngle_slider.get_value()
+
+        if (new_angle1 != fractal.frst_angle or new_angle2 != fractal.sec_angle) and not fractal.is_animating():
+            fractal.update_angles(new_angle1, new_angle2)
+
         if not fractal.is_animating():
-            frstAngle_textbox.draw(screen)
-            secAngle_textbox.draw(screen)
-            draw_button.draw(screen)
             save_button.draw(screen)
 
+
+        frstAngle_slider.draw(screen)
+        secAngle_slider.draw(screen)
         fractal.draw(screen)
         fractal.animate_step()
 

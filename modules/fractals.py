@@ -3,61 +3,91 @@ import math
 
 from modules.custLinAlg import vectorRotation, vectorScaling
 
-class TextBox:
-    def __init__(self, rect, font, text):
+#class TextBox:
+    #def __init__(self, rect, font, text):
+        #self.rect = rect
+        #self.font = font
+        #self.text = text
+        #self.active = False
+        #self.color_active = pygame.Color(57, 255, 20)
+        #self.color_inactive = pygame.Color(255, 255, 255)
+        #self.color = self.color_inactive
+
+
+    #def handle_event(self, event):
+        #if event.type == pygame.MOUSEBUTTONDOWN:
+            #if self.rect.collidepoint(event.pos):
+                #self.active = True
+                #self.text = ''
+            #else:
+                #self.active = False
+            #self.color = self.color_active if self.active else self.color_inactive
+
+        #lif event.type == pygame.KEYDOWN and self.active:
+            #f event.key == pygame.K_BACKSPACE:
+                #self.text = self.text[:-1]
+            #elif event.unicode.isnumeric() or event.unicode in ['.', '-']:
+                #self.text += event.unicode
+
+    #def draw(self, screen):
+        #pygame.draw.rect(screen, self.color, self.rect, 1)
+        #rendered_text = self.font.render(self.text, True, self.color)
+        #screen.blit(rendered_text, (self.rect.x + 5, self.rect.y + 5))
+        #self.rect.w = max(50, rendered_text.get_width() + 10)
+
+    #def get_value(self):
+        #default = 30
+        #try:
+            #return float(self.text)
+        #except ValueError:
+            #self.text = '30'
+            #return default
+        
+class Slider:
+    def __init__(self, rect, font, label, min_value = -360, max_value = 360, initial_value = 30):
         self.rect = rect
         self.font = font
-        self.text = text
-        self.active = False
-        self.color_active = pygame.Color(57, 255, 20)
-        self.color_inactive = pygame.Color(255, 255, 255)
-        self.color = self.color_inactive
+        self.label = label
+        self.min_value = min_value
+        self.max_value = max_value
+        self.value = initial_value
 
+        self.handle_radius = 8
+        self.bar_color = (255, 255, 255)
+        self.handle_color = (57, 255, 20)
+        self.active = False
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
+            if self._handle_hitbox().collidepoint(event.pos):
                 self.active = True
-                self.text = ''
-            else:
-                self.active = False
-            self.color = self.color_active if self.active else self.color_inactive
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.active = False
+        elif event.type == pygame.MOUSEMOTION:
+            if self.active:
+                pos = max(self.rect.left, min(event.pos[0], self.rect.right))
 
-        elif event.type == pygame.KEYDOWN and self.active:
-            if event.key == pygame.K_BACKSPACE:
-                self.text = self.text[:-1]
-            elif event.unicode.isnumeric() or event.unicode in ['.', '-']:
-                self.text += event.unicode
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect, 1)
-        rendered_text = self.font.render(self.text, True, self.color)
-        screen.blit(rendered_text, (self.rect.x + 5, self.rect.y + 5))
-        self.rect.w = max(50, rendered_text.get_width() + 10)
-
-    def get_value(self):
-        default = 30
-        try:
-            return float(self.text)
-        except ValueError:
-            self.text = '30'
-            return default
-        
-class Slider:
-    def __init__(self):
-        pass
-
-    def handle_events(self):
-        pass
+                percent = (pos - self.rect.left) / self.rect.w
+                self.value = round(self.min_value + percent * (self.max_value - self.min_value))
 
     def _handle_hitbox(self):
-        pass
+        x = self.rect.left + (self.value - self.min_value) / (self.max_value - self.min_value) * self.rect.w
+        y = self.rect.centery
+        return pygame.Rect(x - self.handle_radius, y - self.handle_radius, self.handle_radius * 2, self.handle_radius * 2)
 
-    def draw(self):
-        pass
+    def draw(self, screen):
+
+        pygame.draw.line(screen, self.bar_color, (self.rect.left, self.rect.centery), (self.rect.right, self.rect.centery), 4)
+
+        x = self.rect.left + (self.value - self.min_value) / (self.max_value - self.min_value) * self.rect.w
+        pygame.draw.circle(screen, self.handle_color, (int(x), self.rect.centery), self.handle_radius)
+
+        label_text = f"{self.label}: {self.value}°"
+        rendered = self.font.render(label_text, True, (255, 255, 255))
+        screen.blit(rendered, (self.rect.x, self.rect.y - self.font.get_height() - 5))
 
     def get_value(self):
-        pass
+        return self.value
 
 class FractalTree:
     def __init__(self, screen_size, start, end, max_gen , angle1, angle2, ratio):
