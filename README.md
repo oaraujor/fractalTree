@@ -32,7 +32,7 @@ You can interact with sliders and button to change angles or export the current 
 
 ## Example Output
 
-![Fractal Example](media/example.png)
+![Fractal Example](media/fractal_export.png)
 
 ---
 For more details, review the source code in this repository: [oaraujor/fractalTree on GitHub](https://github.com/oaraujor/fractalTree)
