@@ -42,6 +42,22 @@ class TextBox:
         except ValueError:
             self.text = '30'
             return default
+        
+class Slider:
+    def __init__(self):
+        pass
+
+    def handle_events(self):
+        pass
+
+    def _handle_hitbox(self):
+        pass
+
+    def draw(self):
+        pass
+
+    def get_value(self):
+        pass
 
 class FractalTree:
     def __init__(self, screen_size, start, end, max_gen , angle1, angle2, ratio):
@@ -113,8 +129,7 @@ class Button:
         self.clicked = False
     
     def draw(self, screen):
-        #bg_color = (180, 180, 180) if self.clicked else (255, 255, 255)
-        #text_color = (255, 255, 255)
+        
         if self.clicked:
             color = self.click_color
         elif self.hovered:
