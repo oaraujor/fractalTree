@@ -1,17 +1,17 @@
 import pygame
 import math
 
-from modules.custLinAlg import vectorRotation, vectorScaling
+from modules.vectorManip import vectorRotation, vectorScaling
         
 class Slider:
-    def __init__(self, rect, font, label, min_value = 0, max_value = 180, initial_value = 0):
+    def __init__(self, rect, font, label):
         self.rect = rect
         self.font = font
         self.label = label
-        self.min_value = min_value
-        self.max_value = max_value
-        self.value = initial_value
 
+        self.min_value = 0
+        self.max_value = 180
+        self.value = 0
         self.handle_radius = 8
         self.bar_color = (255, 255, 255)
         self.handle_color = (57, 255, 20)
