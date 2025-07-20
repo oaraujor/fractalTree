@@ -39,16 +39,34 @@ def main():
 
     export_y = title_height + (y_padding * 2)
     slider_y = screen_height - slider_height - y_padding
+    ratio_slider_y = slider_y - slider_height - (2 * y_padding)
 
     frstAngle_slider = Slider(
         pygame.Rect(right_slider_x, slider_y, txtBox_width * 4, slider_height),
         slider_font,
         "Right Angle",
+        "angle"
     )
+
     secAngle_slider = Slider(
         pygame.Rect(x_padding, slider_y, txtBox_width * 4, slider_height),
         slider_font,
         "Left Angle",
+        "angle"
+    )
+
+    leftRatio_Slider = Slider(
+        pygame.Rect(x_padding, ratio_slider_y, txtBox_width * 4, slider_height),
+        slider_font,
+        "Left Ratio",
+        "ratio"
+    )
+
+    rightRatio_Slider = Slider(
+        pygame.Rect(right_slider_x, ratio_slider_y, txtBox_width * 4, slider_height),
+        slider_font,
+        "Right Ratio",
+        "ratio"
     )
 
     save_button = Button(
@@ -59,10 +77,10 @@ def main():
     )
 
     # Fractal setup
-    ratio = 0.65
+    #ratio = 0.65
     x = screen_width / 2
     start = [x, screen_height]
-    end = [x, (screen_height) * ratio]
+    end = [x, (screen_height) * 0.65]
 
     fractal = FractalTree(
         (screen_width, screen_height),
@@ -71,7 +89,8 @@ def main():
         9, #number of generations
         frstAngle_slider.get_value(),
         secAngle_slider.get_value(),
-        ratio
+        leftRatio_Slider.get_value(),
+        rightRatio_Slider.get_value()
     )
 
     run = True
@@ -85,6 +104,8 @@ def main():
             if not fractal.is_animating():
                 frstAngle_slider.handle_event(event)
                 secAngle_slider.handle_event(event)
+                leftRatio_Slider.handle_event(event)
+                rightRatio_Slider.handle_event(event)
                 save_button.handle_event(event)
 
         screen.fill("black")
@@ -95,15 +116,20 @@ def main():
 
         new_angle1 = frstAngle_slider.get_value()
         new_angle2 = secAngle_slider.get_value()
+        new_left_ratio = leftRatio_Slider.get_value()
+        new_right_ratio = rightRatio_Slider.get_value()
 
         if (new_angle1 != fractal.frst_angle or new_angle2 != fractal.sec_angle) and not fractal.is_animating():
             fractal.update_angles(new_angle1, new_angle2)
 
-        if not fractal.is_animating():
-            save_button.draw(screen)
+        if (new_left_ratio != fractal.left_ratio or new_right_ratio != fractal.right_ratio) and not fractal.is_animating():
+            fractal.update_ratios(new_left_ratio, new_right_ratio)
 
+        save_button.draw(screen)
         frstAngle_slider.draw(screen)
         secAngle_slider.draw(screen)
+        leftRatio_Slider.draw(screen)
+        rightRatio_Slider.draw(screen)
         fractal.draw(screen)
         fractal.animate_step()
 
