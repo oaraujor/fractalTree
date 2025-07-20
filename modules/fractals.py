@@ -64,6 +64,9 @@ class Slider:
 
     def get_value(self):
         return self.value
+    
+    def update_label(self, new_label):
+        self.label = new_label
 
 class FractalTree:
     def __init__(self, screen_size, start, end, max_gen , angle1, angle2, left_ratio, right_ratio):
@@ -117,7 +120,7 @@ class FractalTree:
         if n > N:
             return
     
-        ratios = [self.left_ratio, self.right_ratio]
+        ratios = [self.right_ratio, self.left_ratio]
 
         for i, angle in enumerate(self.angles):
             scaled = vectorScaling(direction, ratios[i])
@@ -169,3 +172,6 @@ class Button:
                 if self.on_click:
                     self.on_click()
             self.clicked = False
+
+    def update_text(self, new_text):
+        self.text = new_text
