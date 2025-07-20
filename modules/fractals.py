@@ -83,7 +83,7 @@ class FractalTree:
         
         self.base_color = (57, 255, 20)
         self.animating = False
-        self.current_gen = 0
+        self.current_gen = 1
         self.branch_thickness = 1
 
     def reset(self):
@@ -103,9 +103,12 @@ class FractalTree:
         self.reset()
 
     def draw(self, screen):
-        pygame.draw.line(screen, self.base_color, self.start, self.end, self.branch_thickness)
         direction = [self.end[0] - self.start[0], self.end[1] - self.start[1]]
-        self.draw_recursive(screen, self.end, direction, 1, self.current_gen)
+        normdepth = 1 / self.max_gen
+        trunk_color = self.color_linIntpltn((255, 190, 150), (0, 255, 0), normdepth)
+        pygame.draw.line(screen, trunk_color, self.start, self.end, self.branch_thickness)
+
+        self.draw_recursive(screen, self.end, direction, 2)
 
     def animate_step(self):
         if self.animating:
@@ -115,19 +118,35 @@ class FractalTree:
 
     def is_animating(self):
         return self.animating
-
-    def draw_recursive(self, screen, start, direction, n, N):
-        if n > N:
-            return
     
+    def color_linIntpltn(self, brownColor: tuple[int,int,int], greenColor: tuple[int,int,int], normdepth: int) -> tuple[int, int, int]:
+        return (
+            int(brownColor[0] + (greenColor[0] - brownColor[0]) * normdepth),
+            int(brownColor[1] + (greenColor[1] - brownColor[1]) * normdepth),
+            int(brownColor[2] + (greenColor[2] - brownColor[2]) * normdepth),
+        )
+
+    def draw_recursive(self, screen, start, direction, curr_gen):
+        if curr_gen > self.current_gen or curr_gen > self.max_gen:
+            return
+
+        normdepth = curr_gen / self.max_gen
+        color = self.color_linIntpltn((255, 190, 150), (0, 255, 0), normdepth)
+        
+
+        if curr_gen >= self.max_gen:
+            return
+
         ratios = [self.right_ratio, self.left_ratio]
 
         for i, angle in enumerate(self.angles):
             scaled = vectorScaling(direction, ratios[i])
             rotated = vectorRotation(scaled, angle)
             new_end = [start[0] + rotated[0], start[1] + rotated[1]]
-            pygame.draw.line(screen, self.base_color, start, new_end, self.branch_thickness)
-            self.draw_recursive(screen, new_end, rotated, n + 1, N)
+            pygame.draw.line(screen, color, start, new_end, self.branch_thickness)
+            self.draw_recursive(screen, new_end, rotated, curr_gen + 1)
+
+
 
 class Button:
     def __init__(self, rect, font, text, on_click = None):
