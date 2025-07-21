@@ -69,10 +69,10 @@ class Slider:
         self.label = new_label
 
 class FractalTree:
-    def __init__(self, screen_size, start, end, max_gen , angle1, angle2, left_ratio, right_ratio):
+    def __init__(self, screen_size, max_gen , angle1, angle2, left_ratio, right_ratio, is_triary):
         self.screen_size = screen_size
-        self.start = start
-        self.end = end
+        self.start = []
+        self.end = []
         self.max_gen = max_gen
         self.frst_angle = angle1
         self.sec_angle = angle2
@@ -85,6 +85,7 @@ class FractalTree:
         self.animating = False
         self.current_gen = 1
         self.branch_thickness = 1
+        self.is_triary = is_triary
 
     def reset(self):
         self.current_gen = 1
@@ -146,7 +147,16 @@ class FractalTree:
             pygame.draw.line(screen, color, start, new_end, self.branch_thickness)
             self.draw_recursive(screen, new_end, rotated, curr_gen + 1)
 
+    def is_Ftriary(self):
+        return self.is_triary
+    
+    def update_triary(self, new_triary):
+        self.is_triary = new_triary
 
+    def initialize_fractal(self):
+        x = self.screen_size[0] / 2
+        self.start = [x, self.screen_size[1]]
+        self.end = [x, (self.screen_size[1]) * self.left_ratio]
 
 class Button:
     def __init__(self, rect, font, text, on_click = None):

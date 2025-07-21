@@ -26,7 +26,6 @@ def main():
     slider_font = pygame.font.SysFont('consolas', int(screen_height * 0.02))
     button_font = pygame.font.SysFont('consolas', int(screen_height * 0.025))
 
-    # auto adjust txtbxs h, w and padding based on users screen size 
     x_padding = int(screen_width * 0.01)
     txtBox_width = int(screen_width * 0.05)
     y_padding = int(screen_height * 0.01)
@@ -39,6 +38,7 @@ def main():
 
     export_y = title_height + (y_padding * 2)
     toggle_y = export_y + button_height + y_padding
+    triary_toggle_y = toggle_y + button_height + y_padding
 
     slider_y = screen_height - slider_height - y_padding
     ratio_slider_y = slider_y - slider_height - (2.5 * y_padding)
@@ -79,7 +79,6 @@ def main():
     )
 
     is_symmetric = True
-
     def toggle_mode():
         nonlocal is_symmetric
         is_symmetric = not is_symmetric
@@ -90,23 +89,38 @@ def main():
         "Symmetric Tree Mode" if is_symmetric else "Asymmetric Tree Mode",
         on_click = toggle_mode
     )
+
+    is_triary = False
+    def toggle_triary():
+        nonlocal is_triary
+        is_triary = not is_triary
+
+    triary_toggle_button = Button(
+        pygame.Rect(x_padding, triary_toggle_y, txtBox_width * 2, button_height),
+        button_font,
+        "Triary Tree Mode" if is_symmetric else "Binary Tree Mode",
+        on_click = toggle_triary
+    )
     
     # Fractal setup
     #ratio = 0.65
-    x = screen_width / 2
-    start = [x, screen_height]
-    end = [x, (screen_height) * 0.65]
+    #x = screen_width / 2
+    #start = [x, screen_height]
+    #end = [x, (screen_height) * 0.60]
 
     fractal = FractalTree(
         (screen_width, screen_height),
-        start,
-        end,
+        #start,
+        #end,
         9, #number of generations
         rightAngle_slider.get_value(),
         leftAngle_slider.get_value(),
         leftRatio_Slider.get_value(),
-        rightRatio_Slider.get_value()
+        rightRatio_Slider.get_value(),
+        is_triary
     )
+
+    fractal.initialize_fractal()
 
     run = True
     while run:
@@ -124,6 +138,7 @@ def main():
                     rightRatio_Slider.handle_event(event)
                 save_button.handle_event(event)
                 toggle_button.handle_event(event)
+                triary_toggle_button.handle_event(event)
 
         screen.fill("black")
         #render section
@@ -140,6 +155,10 @@ def main():
             new_right_ratio = rightRatio_Slider.get_value()
             new_right_angle = rightAngle_slider.get_value()
 
+        if fractal.is_Ftriary() != is_triary:
+            fractal.update_triary(is_triary)
+            fractal.reset()
+
         if (new_right_angle != fractal.frst_angle or new_left_angle != fractal.sec_angle) and not fractal.is_animating():
             fractal.update_angles(new_right_angle, new_left_angle)
 
@@ -148,8 +167,13 @@ def main():
 
         save_button.draw(screen)
 
+        if is_triary:
+            triary_toggle_button.update_text("Triary Tree Mode")
+        else:
+            triary_toggle_button.update_text("Binary Tree Mode")
+
         if is_symmetric:
-            toggle_button.text = "Symmetric Tree Mode"
+            toggle_button.update_text("Symmetric Tree Mode")
             leftAngle_slider.update_label("Angle")
             leftRatio_Slider.update_label("Ratio")
         else:
@@ -158,6 +182,7 @@ def main():
             leftRatio_Slider.update_label("Left Ratio")
 
         toggle_button.draw(screen)
+        triary_toggle_button.draw(screen)
         leftAngle_slider.draw(screen)
         leftRatio_Slider.draw(screen)
         if not is_symmetric:
