@@ -9,13 +9,11 @@ from modules.fractals import Slider, FractalTree, Button
 
 def main():
 
-    #get users screen size
     user32 = ctypes.windll.user32
     user32.SetProcessDPIAware()
     screen_width = user32.GetSystemMetrics(0)
     screen_height = user32.GetSystemMetrics(1)
 
-    #initialize pygame
     pygame.init()
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
     pygame.display.set_caption("Fractal Canopy")
@@ -102,17 +100,9 @@ def main():
         on_click = toggle_triary
     )
     
-    # Fractal setup
-    #ratio = 0.65
-    #x = screen_width / 2
-    #start = [x, screen_height]
-    #end = [x, (screen_height) * 0.60]
-
     fractal = FractalTree(
         (screen_width, screen_height),
-        #start,
-        #end,
-        9, #number of generations
+        9,
         rightAngle_slider.get_value(),
         leftAngle_slider.get_value(),
         leftRatio_Slider.get_value(),
@@ -176,18 +166,21 @@ def main():
             toggle_button.update_text("Symmetric Tree Mode")
             leftAngle_slider.update_label("Angle")
             leftRatio_Slider.update_label("Ratio")
+            triary_toggle_button.draw(screen)
+
         else:
             toggle_button.update_text("Asymmetric Tree Mode")
             leftAngle_slider.update_label("Left Angle")
             leftRatio_Slider.update_label("Left Ratio")
-
-        toggle_button.draw(screen)
-        triary_toggle_button.draw(screen)
-        leftAngle_slider.draw(screen)
-        leftRatio_Slider.draw(screen)
-        if not is_symmetric:
             rightRatio_Slider.draw(screen)
             rightAngle_slider.draw(screen)
+            if is_triary:
+                toggle_triary()
+                
+        toggle_button.draw(screen)
+        leftAngle_slider.draw(screen)
+        leftRatio_Slider.draw(screen)
+
         fractal.draw(screen)
         fractal.animate_step()
 

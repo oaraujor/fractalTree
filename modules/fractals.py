@@ -130,15 +130,21 @@ class FractalTree:
     def draw_recursive(self, screen, start, direction, curr_gen):
         if curr_gen > self.current_gen or curr_gen > self.max_gen:
             return
+        
+        if curr_gen >= self.max_gen:
+            return
 
         normdepth = curr_gen / self.max_gen
         color = self.color_linIntpltn((255, 190, 150), (0, 255, 0), normdepth)
         
-
-        if curr_gen >= self.max_gen:
-            return
-
         ratios = [self.right_ratio, self.left_ratio]
+        
+        if self.is_triary:
+
+            mid_scaled = vectorScaling(direction, self.left_ratio)
+            mid_end = [start[0] + mid_scaled[0], start[1] + mid_scaled[1]]
+            pygame.draw.line(screen, color, start, mid_end, self.branch_thickness)
+            self.draw_recursive(screen, mid_end, mid_scaled, curr_gen + 1)
 
         for i, angle in enumerate(self.angles):
             scaled = vectorScaling(direction, ratios[i])
